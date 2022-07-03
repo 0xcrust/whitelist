@@ -1,6 +1,8 @@
 use anchor_lang::prelude::*;
 
-declare_id!("5RwKyqR6cDzFiqB5qfBsyqxzb6QuaRy249NwxJJ2154v");
+declare_id!("HcA7NjNNE595vkdMve4g49Hm6rE6o5PjfttLKzCvKsdA");
+
+//const PROGRAMID: Pubkey = Pubkey::new("5RwKyqR6cDzFiqB5qfBsyqxzb6QuaRy249NwxJJ2154v".as_bytes());
 
 #[program]
 pub mod whitelist_pda {
@@ -33,30 +35,35 @@ pub mod whitelist_pda {
     pub fn check_wallet(
         ctx: Context<CheckWallet>,
         _seed: String,
-        _wallet_address: Pubkey,
-    ) -> Result<bool> {
-        let wallet_pda = &mut ctx.accounts.wallet_pda;
-
-        require!(**wallet_pda.to_account_info().try_borrow_lamports()? > 0,
-                    WhitelistError::NotInWhitelist);
-        
-        msg!("Wallet is whitelisted!");
-        Ok(true)
-    }
-
-    
-    pub fn remove_wallet(
-        ctx: Context<RemoveWallet>,
-        _seed: String, 
-        _wallet_address: Pubkey
+        wallet_address: Pubkey,
     ) -> Result<()> {
         let config = &mut ctx.accounts.whitelist_config;
         let wallet_pda = &mut ctx.accounts.wallet_pda;
 
-        require!(**wallet_pda.to_account_info().try_borrow_lamports()? <= 0,
-                     WhitelistError::FailedWalletRemoval);
+        let (pda, _) = Pubkey::find_program_address(&[config.key().as_ref(),
+             wallet_address.key().as_ref()], ctx.program_id);
 
-        msg!("Wallet removed from whitelist");
+        if wallet_pda.key() != pda {
+            return Err(WhitelistError::NonMatchingPDAs.into());
+        }
+
+        if **wallet_pda.try_borrow_lamports()? > 0 {
+            msg!("Wallet is whitelisted!");
+            Ok(())
+        } else {
+            msg!("Wallet is not in whitelist!");
+            return Err(WhitelistError::WalletNotWhitelisted.into());
+        }
+    }
+
+    pub fn remove_wallet(
+        ctx: Context<RemoveWallet>,
+        _seed: String, 
+        _wallet_address: Pubkey,
+        _wallet_bump: u8
+    ) -> Result<()> {
+        let config = &mut ctx.accounts.whitelist_config;
+       
         config.counter = config.counter.checked_sub(1).unwrap();
         Ok(())
     }
@@ -102,6 +109,7 @@ pub struct AddWallet<'info> {
     system_program: Program<'info, System>,
 }
 
+
 #[derive(Accounts)]
 #[instruction(seed: String, wallet_address: Pubkey)]
 pub struct CheckWallet<'info> {
@@ -112,15 +120,12 @@ pub struct CheckWallet<'info> {
     )]
     whitelist_config: Account<'info, Config>,
     authority: Signer<'info>,
-    #[account(
-        seeds=[whitelist_config.key().as_ref(), wallet_address.as_ref()],
-        bump
-    )]
-    wallet_pda: Account<'info, Wallet>,
+    /// CHECK: We check that it's the valid wallet pda in the instruction
+    wallet_pda: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
-#[instruction(seed: String, wallet_address: Pubkey)]
+#[instruction(seed: String, wallet_address: Pubkey, wallet_bump: u8)]
 pub struct RemoveWallet <'info> {
     #[account(
         mut,
@@ -131,13 +136,15 @@ pub struct RemoveWallet <'info> {
     whitelist_config: Account<'info, Config>,
     #[account(
         mut,
-        seeds=[seed.as_bytes().as_ref(), wallet_address.key().as_ref()],
-        bump,
+        seeds=[whitelist_config.key().as_ref(), wallet_address.key().as_ref()],
+        bump = wallet_bump,
         close = authority,
     )]
     wallet_pda: Account<'info, Wallet>,
-    authority: Signer<'info>
+    #[account(mut)]
+    authority: Signer<'info>,
 }
+
 
 
 #[account]
@@ -155,8 +162,10 @@ pub struct Wallet {}
 
 #[error_code]
 pub enum WhitelistError {
-    NotInWhitelist,
-    InvalidWhitelistAccount,
+    #[msg("Wallet is not in whitelist")]
+    WalletNotWhitelisted,
+    #[msg("PDA derived from address argument does not match that in argument")]
+    NonMatchingPDAs,
+    #[msg("Failed adding wallet to whitelist")]
     FailedWalletAddition,
-    FailedWalletRemoval,
 }

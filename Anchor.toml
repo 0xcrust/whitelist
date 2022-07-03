@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.devnet]
-whitelist_pda = "5RwKyqR6cDzFiqB5qfBsyqxzb6QuaRy249NwxJJ2154v"
+whitelist_pda = "HcA7NjNNE595vkdMve4g49Hm6rE6o5PjfttLKzCvKsdA"
 
 [registry]
 url = "https://anchor.projectserum.com"
