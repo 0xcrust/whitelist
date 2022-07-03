@@ -2,8 +2,6 @@ use anchor_lang::prelude::*;
 
 declare_id!("HcA7NjNNE595vkdMve4g49Hm6rE6o5PjfttLKzCvKsdA");
 
-//const PROGRAMID: Pubkey = Pubkey::new("5RwKyqR6cDzFiqB5qfBsyqxzb6QuaRy249NwxJJ2154v".as_bytes());
-
 #[program]
 pub mod whitelist_pda {
     use super::*;
