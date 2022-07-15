@@ -1,4 +1,3 @@
-### Wallet Whitelisting Contract
 ## Description
 A smart contract written to replicate the concept of a whitelist, that is a gating tool for determining which users are granted access to a particular service. It supports addition, removal and checking of wallets.
 
