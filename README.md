@@ -17,7 +17,7 @@ The whitelist account.
 A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be. 
 
 ## Instructions
-- ### Create a whitelist
+1. ### Create a whitelist
 ```rust
 create_whitelist()
 ```
@@ -28,17 +28,15 @@ The whitelist authority and signer of this instruction.
 - **whitelist**  
 Your to-be-created whitelist account.
 - **system_program**  
-The Solana system program account.  
-
-- ### Add a wallet to the whitelist
+The Solana system program account. 
+ 
+2. ### Add a wallet to the whitelist
 ```rust
 add_wallet(wallet_address)
 ```
-
 **Arguments:**
 - **wallet_address**  
 The public key of the wallet to be added.
-
 **Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority
@@ -49,11 +47,10 @@ A `wallet_pda` account with seeds: `[whitelist.key(), wallet_address.key()]`.
 - **sytem_program**  
 The Solana system program account.
 
-- ### Check if a wallet is whitelisted
+3. ### Check if a wallet is whitelisted
 ```rust
 check_wallet(wallet_address)
 ```
-
 **Arguments:**
 - **wallet_address**  
 The public key of the wallet to be added.
@@ -63,11 +60,10 @@ The whitelist.
 - **wallet_pda**  
 A `wallet_pda` account with the specified seeds.
 
-- ### Remove a wallet from the whitelist
+4. ### Remove a wallet from the whitelist
 ```rust
-remove_wallet(wallet_address: Pubkey)
+remove_wallet(wallet_address)
 ```
-
 **Arguments:**
 - **wallet_address**  
 The public key of the wallet to be added.
@@ -79,14 +75,13 @@ The whitelist account.
 - **wallet_pda**`(mut)`  
 A `wallet_pda` account with the specified seeds.
 
-- ### Change the authority of the whitelist
+5. ### Change the authority of the whitelist
 ```rust
-pub fun set_authority(new_authority: Pubkey)
+pub fun set_authority(new_authority)
 ```
-
 **Arguments:**
-- **wallet_address**  
-The public key of the wallet to be added.
+- **new_authority**  
+The new authority of the whitelist.
 **Accounts:**
 - **authority**`(signer)`  
 The whitelist authority.
