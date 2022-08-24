@@ -1,9 +1,10 @@
 ## Description
-A smart contract written to replicate the concept of a whitelist, that is a gating tool for determining which users are granted access to a particular service. It supports addition, removal and checking of wallets.
-
+A program that helps other smart contracts manage access to an on-chain Solana service. It supports addition, removal of wallets to a whitelist, and grants the ability to checking if a wallet is whitelisted.
 ## How it works
 The whitelisting contract works using pdas. When a wallet is added to the whitelist a new account with a PDA is created for it. Hence to know if a wallet is whitelisted or not all we'd to do is check if
 the account that should have been created when it was added, exists.
+
+This program lives on the devnet at **HqBtRNgYEFDDCiDh2jvt33MA9ZkC1hs59eQ5GLR3TfEu**
 
 
 ## To hardcode a whitelist into your on-chain programs by CPI:
