@@ -45,7 +45,7 @@ it("Creates a whitelist", async () => {
     .createWhitelist()
     .accounts({
       authority: authority.publicKey,
-      whitelistConfig: whitelistAddress.publicKey,
+      whitelist: whitelistAddress.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId,
     })
     .signers([whitelistAddress, authority])
@@ -53,7 +53,7 @@ it("Creates a whitelist", async () => {
 
   console.log("\nStarted new whitelist!");
 
-  let config = await program.account.whitelistConfig.fetch(whitelistAddress.publicKey);
+  let config = await program.account.whitelist.fetch(whitelistAddress.publicKey);
 
   assert.ok(config.authority.equals(authority.publicKey));
   assert.equal(config.counter.toNumber(), 0);
@@ -72,17 +72,16 @@ it("Adds wallets to whitelist", async () => {
     await program.methods
       .addWallet(wallet.publicKey)
       .accounts({
-        whitelistConfig: whitelistAddress.publicKey,
+        whitelist: whitelistAddress.publicKey,
         walletPda: walletPDA,
         authority: authority.publicKey,
-        feePayer: authority.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId
       })
       .signers([authority])
       .rpc();
   }
 
-  let config = await program.account.whitelistConfig.fetch(whitelistAddress.publicKey);
+  let config = await program.account.whitelist.fetch(whitelistAddress.publicKey);
   assert.equal(config.counter.toNumber(), 5);
 
   // Tests adding a wallet that has already been added
@@ -96,10 +95,9 @@ it("Adds wallets to whitelist", async () => {
     await program.methods
     .addWallet(duplicateWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: duplicateWalletPDA,
       authority: authority.publicKey,
-      feePayer: authority.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId 
     })
     .signers([authority])
@@ -124,8 +122,7 @@ it("Checks if wallets are whitelisted", async () => {
   await program.methods
     .checkWallet(whitelistedWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
-      authority: authority.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: whitelistedWalletPDA,
     })
     .signers([])
@@ -143,8 +140,7 @@ it("Checks if wallets are whitelisted", async () => {
     await program.methods
     .checkWallet(nonWhitelistedWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
-      authority: authority.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: nonWhitelistedWalletPDA,
     })
     .signers([])
@@ -166,8 +162,7 @@ it("Checks if wallets are whitelisted", async () => {
     await program.methods
     .checkWallet(randomWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
-      authority: authority.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: nonWhitelistedWalletPDA,
     })
     .signers([])
@@ -197,10 +192,9 @@ it("Removes wallets from whitelist", async () => {
     await program.methods
       .removeWallet(walletToRemove.publicKey)
       .accounts({
-        whitelistConfig: whitelistAddress.publicKey,
+        whitelist: whitelistAddress.publicKey,
         walletPda: removeWalletPDA,
         authority: authority.publicKey,
-        refundWallet: authority.publicKey,
       })
       .signers([authority])
       .rpc();
@@ -220,8 +214,7 @@ it("Removes wallets from whitelist", async () => {
       await program.methods
       .checkWallet(wallet.publicKey)
       .accounts({
-        whitelistConfig: whitelistAddress.publicKey,
-        authority: authority.publicKey,
+        whitelist: whitelistAddress.publicKey,
         walletPda: walletPDA,
       })
       .signers([])
@@ -237,7 +230,7 @@ it("Removes wallets from whitelist", async () => {
     }
   }
 
-  let config = await program.account.whitelistConfig.fetch(whitelistAddress.publicKey); 
+  let config = await program.account.whitelist.fetch(whitelistAddress.publicKey); 
   assert.equal(config.counter.toNumber(), 2);
 
   
@@ -252,10 +245,9 @@ it("Removes wallets from whitelist", async () => {
     await program.methods
     .removeWallet(removedWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: removedWalletPDA,
       authority: authority.publicKey,
-      refundWallet: authority.publicKey
     })
     .signers([authority])
     .rpc();
@@ -280,10 +272,9 @@ it("Removes wallets from whitelist", async () => {
     await program.methods
     .removeWallet(neverWhitelisted.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: neverWhitelistedPDA,
       authority: authority.publicKey,
-      refundWallet: authority.publicKey,
     })
     .signers([authority])
     .rpc();
@@ -306,13 +297,13 @@ it("Sets a new whitelist authority", async () => {
   await program.methods
     .setAuthority(newAuthority.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
-      currentAuthority: authority.publicKey
+      whitelist: whitelistAddress.publicKey,
+      authority: authority.publicKey
     })
     .signers([authority])
     .rpc();
 
-  let config = await program.account.whitelistConfig.fetch(whitelistAddress.publicKey);
+  let config = await program.account.whitelist.fetch(whitelistAddress.publicKey);
   assert.ok(config.authority.equals(newAuthority.publicKey));
 
   let newWallet = anchor.web3.Keypair.generate();
@@ -325,10 +316,9 @@ it("Sets a new whitelist authority", async () => {
   await program.methods
     .addWallet(newWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: newWalletPDA,
       authority: newAuthority.publicKey,
-      feePayer: newAuthority.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId
     })
     .signers([newAuthority])
@@ -338,8 +328,7 @@ it("Sets a new whitelist authority", async () => {
   await program.methods
     .checkWallet(newWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
-      authority: newAuthority.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: newWalletPDA,
     })
     .signers([])
@@ -349,10 +338,9 @@ it("Sets a new whitelist authority", async () => {
     await program.methods
     .addWallet(newWallet.publicKey)
     .accounts({
-      whitelistConfig: whitelistAddress.publicKey,
+      whitelist: whitelistAddress.publicKey,
       walletPda: newWalletPDA,
       authority: authority.publicKey,
-      feePayer: authority.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId
     })
     .signers([authority])
