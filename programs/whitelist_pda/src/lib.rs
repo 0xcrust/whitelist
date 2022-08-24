@@ -1,22 +1,22 @@
 use anchor_lang::prelude::*;
 
-declare_id!("HcA7NjNNE595vkdMve4g49Hm6rE6o5PjfttLKzCvKsdA");
+declare_id!("HqBtRNgYEFDDCiDh2jvt33MA9ZkC1hs59eQ5GLR3TfEu");
 
 #[program]
 pub mod whitelist_pda {
     use super::*;
 
     pub fn create_whitelist(ctx: Context<CreateWhitelist>) -> Result<()> {
-        let config = &mut ctx.accounts.whitelist_config;
+        let whitelist = &mut ctx.accounts.whitelist;
 
-        config.authority = ctx.accounts.authority.key();
-        config.counter = 0;
+        whitelist.authority = ctx.accounts.authority.key();
+        whitelist.counter = 0;
         Ok(())
     }
 
     pub fn add_wallet(ctx: Context<AddWallet>, _wallet_address: Pubkey) -> Result<()> {
-        let config = &mut ctx.accounts.whitelist_config;
-        config.counter = config.counter.checked_add(1).unwrap();
+        let whitelist = &mut ctx.accounts.whitelist;
+        whitelist.counter = whitelist.counter.checked_add(1).unwrap();
         Ok(())
     }
 
@@ -25,14 +25,14 @@ pub mod whitelist_pda {
     }
 
     pub fn remove_wallet(ctx: Context<RemoveWallet>, _wallet_address: Pubkey) -> Result<()> {
-        let config = &mut ctx.accounts.whitelist_config;
-        config.counter = config.counter.checked_sub(1).unwrap();
+        let whitelist = &mut ctx.accounts.whitelist;
+        whitelist.counter = whitelist.counter.checked_sub(1).unwrap();
         Ok(())
     }
 
     pub fn set_authority(ctx: Context<SetAuthority>, new_authority: Pubkey) -> Result<()> {
-        let config = &mut ctx.accounts.whitelist_config;
-        config.authority = new_authority;
+        let whitelist = &mut ctx.accounts.whitelist;
+        whitelist.authority = new_authority;
         Ok(())
     }
 }
@@ -44,44 +44,39 @@ pub struct CreateWhitelist<'info> {
     #[account(
         init,
         payer = authority,
-        space = WhitelistConfig::LEN,
+        space = 8 + Whitelist::LEN,
     )]
-    whitelist_config: Account<'info, WhitelistConfig>,
+    whitelist: Account<'info, Whitelist>,
     system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 #[instruction(wallet_address: Pubkey)]
 pub struct AddWallet<'info> {
+    #[account(mut)]
+    authority: Signer<'info>,
     #[account(
         mut,
         has_one = authority,
     )]
-    whitelist_config: Account<'info, WhitelistConfig>,
+    whitelist: Account<'info, Whitelist>,
     #[account(
         init,
-        seeds = [whitelist_config.key().as_ref(), wallet_address.as_ref()],
+        seeds = [whitelist.key().as_ref(), wallet_address.as_ref()],
         bump,
-        payer = fee_payer,
+        payer = authority,
         space = 8,
     )]
     wallet_pda: Account<'info, Wallet>,
-    /// CHECK: We do not read or write from this account
-    authority: AccountInfo<'info>,
-    #[account(mut)]
-    fee_payer: Signer<'info>,
     system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
 #[instruction(wallet_address: Pubkey)]
 pub struct CheckWallet<'info> {
-    #[account(has_one = authority)]
-    whitelist_config: Account<'info, WhitelistConfig>,
-    /// CHECK: We do not read or write from this account
-    authority: AccountInfo<'info>,
+    whitelist: Account<'info, Whitelist>,
     #[account(
-        seeds = [whitelist_config.key().as_ref(), wallet_address.key().as_ref()],
+        seeds = [whitelist.key().as_ref(), wallet_address.key().as_ref()],
         bump,
     )]
     wallet_pda: Account<'info, Wallet>,
@@ -90,42 +85,37 @@ pub struct CheckWallet<'info> {
 #[derive(Accounts)]
 #[instruction(wallet_address: Pubkey)]
 pub struct RemoveWallet<'info> {
+    #[account(mut)]
+    authority: Signer<'info>,
     #[account(
         mut,
         has_one = authority,
     )]
-    whitelist_config: Account<'info, WhitelistConfig>,
+    whitelist: Account<'info, Whitelist>,
     #[account(
         mut,
-        seeds=[whitelist_config.key().as_ref(), wallet_address.as_ref()],
+        seeds=[whitelist.key().as_ref(), wallet_address.as_ref()],
         bump,
-        close = refund_wallet,
+        close = authority,
     )]
     wallet_pda: Account<'info, Wallet>,
-    /// CHECK: We do not read or write from this account
-    authority: AccountInfo<'info>,
-    #[account(mut)]
-    refund_wallet: Signer<'info>,
 }
 
 #[derive(Accounts)]
 pub struct SetAuthority<'info> {
-    #[account(
-        mut,
-        constraint = whitelist_config.authority == current_authority.key(),
-    )]
-    whitelist_config: Account<'info, WhitelistConfig>,
-    current_authority: Signer<'info>,
+    authority: Signer<'info>,
+    #[account(mut, has_one = authority)]
+    whitelist: Account<'info, Whitelist>,
 }
 
 #[account]
-pub struct WhitelistConfig {
+pub struct Whitelist {
     pub authority: Pubkey,
     pub counter: u64,
 }
 
-impl WhitelistConfig {
-    pub const LEN: usize = 8 + 32 + 8;
+impl Whitelist {
+    pub const LEN: usize = 32 + 8;
 }
 
 #[account]
