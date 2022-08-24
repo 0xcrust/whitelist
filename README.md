@@ -9,12 +9,16 @@ This program lives on the devnet at **HqBtRNgYEFDDCiDh2jvt33MA9ZkC1hs59eQ5GLR3Tf
 
 ## To hardcode a whitelist into your on-chain programs by CPI:
 ## Accounts
-**authority**
-The creator of the whitelist.
-**whitelist_pda**
-The whitelist account
-**wallet_pda**
-A PDA with seeds: 
+**authority**    
+The creator of the whitelist.  
+**whitelist_pda**  
+The whitelist account  
+**wallet_pda**  
+A PDA with seeds:
+
+
+Test test test test. git git git git git git.
+
 
 
 - **authority**: The creator of the whitelist.
