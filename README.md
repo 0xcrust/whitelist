@@ -17,21 +17,29 @@ The whitelist account.
 A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be. 
 
 ## Instructions
+### Create a whitelist
 ```rust
-pub fn create_whitelist()
+create_whitelist()
 ```
+
 **Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority and signer of this instruction.  
 - **whitelist**  
 Your to-be-created whitelist account.
 - **system_program**  
-The Solana system program account.
+The Solana system program account.  
 
+### Add a wallet to the whitelist
 ```rust
-pub fn add_wallet(wallet_address: Pubkey)
+add_wallet(wallet_address)
 ```
-**Accounts**:
+
+**Arguments:**
+- **wallet_address**  
+The public key of the wallet to be added.
+
+**Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority
 - **whitelist**`(mut)`  
@@ -41,18 +49,28 @@ A `wallet_pda` account with seeds: `[whitelist.key(), wallet_address.key()]`.
 - **sytem_program**  
 The Solana system program account.
 
+### Check if a wallet is whitelisted
 ```rust
-pub fn check_wallet(wallet_address: Pubkey)
+check_wallet(wallet_address)
 ```
+
+**Arguments:**
+- **wallet_address**  
+The public key of the wallet to be added.
 **Accounts:**
 - **whitelist**  
 The whitelist.
 - **wallet_pda**  
 A `wallet_pda` account with the specified seeds.
 
+### Remove a wallet from the whitelist
 ```rust
-pub fn remove_wallet(wallet_address: Pubkey)
+remove_wallet(wallet_address: Pubkey)
 ```
+
+**Arguments:**
+- **wallet_address**  
+The public key of the wallet to be added.
 **Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority.
@@ -61,25 +79,28 @@ The whitelist account.
 - **wallet_pda**`(mut)`  
 A `wallet_pda` account with the specified seeds.
 
+### Change the authority of the whitelist
 ```rust
 pub fun set_authority(new_authority: Pubkey)
 ```
+
+**Arguments:**
+- **wallet_address**  
+The public key of the wallet to be added.
 **Accounts:**
 - **authority**`(signer)`  
 The whitelist authority.
 - **whitelist**`(mut)`  
 The whitelist account.
 
-## Requirements
+## Build and Testing
+### Requirements
 - [Rust](https://www.rust-lang.org/tools/install)
 - [Solana](https://docs.solana.com/cli/install-solana-cli-tools)
 - [Yarn](https://yarnpkg.com/getting-started/install)
 - [Anchor](https://book.anchor-lang.com/getting_started/installation.html)
 
 View the full steps [here.](https://book.anchor-lang.com/getting_started/installation.html)
-
-## Build and Testing
-Deploy the contract to the devnet by following these steps on your cli:
 
 #### Generate wallet
 - Run ` solana-keygen new ` to create a wallet keypair
