@@ -12,27 +12,21 @@ This program lives on the devnet at **HqBtRNgYEFDDCiDh2jvt33MA9ZkC1hs59eQ5GLR3Tf
 **authority**    
 The creator of the whitelist.  
 **whitelist_pda**  
-The whitelist account  
+The whitelist account.  
 **wallet_pda**  
-A PDA with seeds:
-
-
-Test test test test. git git git git git git.
-
-
-
-- **authority**: The creator of the whitelist.
-- **whitelist**: Your whitelist account. It stores details about it, such as the authority of the whitelist and the current number of whitelisted wallets.
-- **wallet_pda**: A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be.
+A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be. 
 
 ## Instructions
 ```rust
 pub fn create_whitelist()
 ```
 Accounts:
-- **authority**`(mut, signer)`: The whitelist authority, signer of the instruction to create a whitelist.
-- **whitelist**: Your to-be-created whitelist account.
-- **system_program**: The Solana system program account.
+- **authority**`(mut, signer)`  
+The whitelist authority, signer of the instruction to create a whitelist.
+- **whitelist**  
+Your to-be-created whitelist account.
+- **system_program**  
+The Solana system program account.
 
 ```rust
 pub fn add_wallet(wallet_address: Pubkey)
