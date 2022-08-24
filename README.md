@@ -17,7 +17,7 @@ The whitelist account.
 A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be. 
 
 ## Instructions
-### Create a whitelist
+- ### Create a whitelist
 ```rust
 create_whitelist()
 ```
@@ -30,7 +30,7 @@ Your to-be-created whitelist account.
 - **system_program**  
 The Solana system program account.  
 
-### Add a wallet to the whitelist
+- ### Add a wallet to the whitelist
 ```rust
 add_wallet(wallet_address)
 ```
@@ -49,7 +49,7 @@ A `wallet_pda` account with seeds: `[whitelist.key(), wallet_address.key()]`.
 - **sytem_program**  
 The Solana system program account.
 
-### Check if a wallet is whitelisted
+- ### Check if a wallet is whitelisted
 ```rust
 check_wallet(wallet_address)
 ```
@@ -63,7 +63,7 @@ The whitelist.
 - **wallet_pda**  
 A `wallet_pda` account with the specified seeds.
 
-### Remove a wallet from the whitelist
+- ### Remove a wallet from the whitelist
 ```rust
 remove_wallet(wallet_address: Pubkey)
 ```
@@ -79,7 +79,7 @@ The whitelist account.
 - **wallet_pda**`(mut)`  
 A `wallet_pda` account with the specified seeds.
 
-### Change the authority of the whitelist
+- ### Change the authority of the whitelist
 ```rust
 pub fun set_authority(new_authority: Pubkey)
 ```
