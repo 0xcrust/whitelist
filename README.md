@@ -2,13 +2,21 @@
 A program that lets other smart contracts manage access to an on-chain Solana service. It supports addition, removal of wallets to a whitelist, and grants the ability to checking if a wallet is whitelisted.
 ## How it works
 The whitelisting contract works using pdas. When a wallet is added to the whitelist a new account with a PDA is created for it. Hence to know if a wallet is whitelisted or not all we'd to do is check if
-the account that should have been created when it was added, exists.
+the account that should have been created when it was added actually exists.
 
 This program lives on the devnet at **HqBtRNgYEFDDCiDh2jvt33MA9ZkC1hs59eQ5GLR3TfEu**
 
 
 ## To hardcode a whitelist into your on-chain programs by CPI:
 ## Accounts
+**authority**
+The creator of the whitelist.
+**whitelist_pda**
+The whitelist account
+**wallet_pda**
+A PDA with seeds: 
+
+
 - **authority**: The creator of the whitelist.
 - **whitelist**: Your whitelist account. It stores details about it, such as the authority of the whitelist and the current number of whitelisted wallets.
 - **wallet_pda**: A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be.
