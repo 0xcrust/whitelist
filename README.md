@@ -9,18 +9,18 @@ This program lives on the devnet at **HqBtRNgYEFDDCiDh2jvt33MA9ZkC1hs59eQ5GLR3Tf
 
 ## To hardcode a whitelist into your on-chain programs by CPI:
 ## Accounts
-**authority**    
+- **authority**    
 The creator of the whitelist.  
-**whitelist_pda**  
+- **whitelist_pda**  
 The whitelist account.  
-**wallet_pda**  
+- **wallet_pda**  
 A PDA with seeds: `[whitelist.key(), wallet_address.key()]`. `wallet_address` is the address of a wallet that's to be whitelisted or expected to already be. 
 
 ## Instructions
 ```rust
 pub fn create_whitelist()
 ```
-Accounts:
+**Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority and signer of this instruction.  
 - **whitelist**  
@@ -31,7 +31,7 @@ The Solana system program account.
 ```rust
 pub fn add_wallet(wallet_address: Pubkey)
 ```
-Accounts:
+**Accounts**:
 - **authority**`(mut, signer)`  
 The whitelist authority
 - **whitelist**`(mut)`  
@@ -44,7 +44,7 @@ The Solana system program account.
 ```rust
 pub fn check_wallet(wallet_address: Pubkey)
 ```
-Accounts:
+**Accounts:**
 - **whitelist**  
 The whitelist.
 - **wallet_pda**  
@@ -53,7 +53,7 @@ A `wallet_pda` account with the specified seeds.
 ```rust
 pub fn remove_wallet(wallet_address: Pubkey)
 ```
-Accounts:
+**Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority.
 - **whitelist**`(mut)`  
@@ -64,7 +64,7 @@ A `wallet_pda` account with the specified seeds.
 ```rust
 pub fun set_authority(new_authority: Pubkey)
 ```
-Accounts:
+**Accounts:**
 - **authority**`(signer)`  
 The whitelist authority.
 - **whitelist**`(mut)`  
