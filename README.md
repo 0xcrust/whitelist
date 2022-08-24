@@ -22,7 +22,7 @@ pub fn create_whitelist()
 ```
 Accounts:
 - **authority**`(mut, signer)`  
-The whitelist authority, signer of the instruction to create a whitelist.
+The whitelist authority and signer of this instruction.  
 - **whitelist**  
 Your to-be-created whitelist account.
 - **system_program**  
@@ -32,32 +32,43 @@ The Solana system program account.
 pub fn add_wallet(wallet_address: Pubkey)
 ```
 Accounts:
-- **authority**`(mut, signer)`: The whitelist authority
-- **whitelist**`(mut)`: The whitelist account.
-- **wallet_pda**: A `wallet_pda` account with seeds: `[whitelist.key(), wallet_address.key()]`.
-- **sytem_program**: The Solana system program account.
+- **authority**`(mut, signer)`  
+The whitelist authority
+- **whitelist**`(mut)`  
+The whitelist account.
+- **wallet_pda**  
+A `wallet_pda` account with seeds: `[whitelist.key(), wallet_address.key()]`.
+- **sytem_program**  
+The Solana system program account.
 
 ```rust
 pub fn check_wallet(wallet_address: Pubkey)
 ```
 Accounts:
-- **whitelist**: The whitelist.
-- **wallet_pda**: A `wallet_pda` account with the specified seeds.
+- **whitelist**  
+The whitelist.
+- **wallet_pda**  
+A `wallet_pda` account with the specified seeds.
 
 ```rust
 pub fn remove_wallet(wallet_address: Pubkey)
 ```
 Accounts:
-- **authority**`(mut, signer)`: The whitelist authority.
-- **whitelist**`(mut)`: The whitelist account.
-- **wallet_pda**`(mut)`: A `wallet_pda` account with the specified seeds.
+- **authority**`(mut, signer)`  
+The whitelist authority.
+- **whitelist**`(mut)`  
+The whitelist account.
+- **wallet_pda**`(mut)`  
+A `wallet_pda` account with the specified seeds.
 
 ```rust
 pub fun set_authority(new_authority: Pubkey)
 ```
 Accounts:
-- **authority**`(signer)`: The whitelist authority.
-- **whitelist**`(mut)`: The whitelist account.
+- **authority**`(signer)`  
+The whitelist authority.
+- **whitelist**`(mut)`  
+The whitelist account.
 
 ## Requirements
 - [Rust](https://www.rust-lang.org/tools/install)
