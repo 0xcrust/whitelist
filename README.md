@@ -37,6 +37,7 @@ add_wallet(wallet_address)
 **Arguments:**
 - **wallet_address**  
 The public key of the wallet to be added.  
+  
 **Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority
@@ -54,6 +55,7 @@ check_wallet(wallet_address)
 **Arguments:**
 - **wallet_address**  
 The public key of the wallet to be added.  
+
 **Accounts:**
 - **whitelist**  
 The whitelist.
@@ -66,7 +68,8 @@ remove_wallet(wallet_address)
 ```
 **Arguments:**
 - **wallet_address**  
-The public key of the wallet to be added.  
+The public key of the wallet to be added.
+
 **Accounts:**
 - **authority**`(mut, signer)`  
 The whitelist authority.
@@ -81,7 +84,8 @@ pub fun set_authority(new_authority)
 ```
 **Arguments:**
 - **new_authority**  
-The new authority of the whitelist.  
+The new authority of the whitelist.
+
 **Accounts:**
 - **authority**`(signer)`  
 The whitelist authority.
